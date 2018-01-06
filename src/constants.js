@@ -6,6 +6,12 @@ module.exports = {
   API_VERSION: '5.69',
 
   /**
+   * Api language
+   * @type {string}
+   */
+  LANG: 'ru',
+
+  /**
    * All user permission scopes
    * https://vk.com/dev/permissions
    * @type {Array}

@@ -16,5 +16,8 @@
     "vksdk"
   ],
   "author": "mavajee <mxv.vlasov@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^1.7.3"
+  }
 }

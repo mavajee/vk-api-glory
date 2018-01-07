@@ -1,5 +1,5 @@
 {
-  "name": "vk-js",
+  "name": "vk-api-glory",
   "version": "1.0.0",
   "description": "Simple node.js package for vk api.",
   "main": "index.js",

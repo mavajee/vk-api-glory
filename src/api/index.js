@@ -39,51 +39,52 @@ class VkApi {
    * @return {Promise<Object>}
    * @public
    */
-  call(methodName, params = {}) {
-    if (typeof methodName !== 'string') {
-      return Promise.reject(new Error('Attribute Error. `methodName` must be a string.'));
-    }
+	call(methodName, params = {}) {
+		if (typeof methodName !== 'string') {
+			return Promise.reject(new Error('Attribute Error. `methodName` must be a string.'));
+		}
 
-    let retry = (_p) => (
-      this.call(methodName, {
-        ...params,
-        ..._p
-    }));
+		let retry = (_p) => (
+			this.call(methodName, {
+				...params,
+				..._p
+			})
+		);
 
-    let requestBody = {
-      access_token: this.accessToken || params.accessToken || params.access_token,
-      lang: this.lang || params.lang,
-      v: this.apiVersion || params.apiVersion || params.v,
+		let requestBody = {
+			access_token: this.accessToken || params.accessToken || params.access_token,
+			lang: this.lang || params.lang,
+			v: this.apiVersion || params.apiVersion || params.v,
 
-      ...params
-    };
+			...params
+		};
 
-    return fetch(new URL(methodName, API_URL).toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-      timeout: 4500,
-      body: qs.stringify(requestBody)
-    })
-      .then(response => response.json())
-      .then(json => {
-        if (json.error) {
-          const error = new ApiError(json.error);
+		return fetch(new URL(methodName, API_URL).toString(), {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+			timeout: 4500,
+			body: qs.stringify(requestBody)
+		})
+			.then(response => response.json())
+			.then(json => {
+				if (json.error) {
+					const error = new ApiError(json.error);
 
-          if (error.code === ERROR_CODES.CAPTCHA_REQUIRED && this.captchaHandler) {
-            return this.handleCaptcha(error, retry);
-          }
+					if (error.code === ERROR_CODES.CAPTCHA_REQUIRED && this.captchaHandler) {
+						return this.handleCaptcha(error, retry);
+					}
 
-          return Promise.reject(error);
-        }
+					return Promise.reject(error);
+				}
 
-        // Return full response, because it can include "execute_errors".
-        if (methodName.startsWith('execute')) {
-          return json;
-        }
+				// Return full response, because it can include "execute_errors".
+				if (methodName.startsWith('execute')) {
+					return json;
+				}
 
-        return json.response;
-      })
-  }
+				return json.response;
+			})
+	}
 
   /**
    * Set access token
@@ -115,16 +116,16 @@ class VkApi {
    * @returns {Promise}
    * @private
    */
-  handleCaptcha({ captchaSid, captchaImg }, reCall) {
-    return this.captchaHandler(captchaImg)
-      .then(captchaKey => (
-          reCall({
-            captcha_sid: captchaSid,
-            captcha_key: captchaKey
-          })
-        )
-      )
-  }
+	handleCaptcha({ captchaSid, captchaImg }, reCall) {
+		return this.captchaHandler(captchaImg)
+			.then(captchaKey => (
+				reCall({
+					captcha_sid: captchaSid,
+					captcha_key: captchaKey
+				})
+			)
+			)
+	}
 }
 
 module.exports = VkApi;

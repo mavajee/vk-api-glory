@@ -17,6 +17,9 @@
   ],
   "author": "mavajee <mxv.vlasov@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
     "node-fetch": "^1.7.3"
   }

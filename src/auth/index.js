@@ -25,11 +25,11 @@ class Auth {
    */
   constructor({
       username,
-    password,
-    clientId,
-    clientSecret,
-    scope = userScopes.join(','),
-    version = API_VERSION,
+      password,
+      clientId,
+      clientSecret,
+      scope = userScopes.join(','),
+      version = API_VERSION,
     } = {}
   ) {
 

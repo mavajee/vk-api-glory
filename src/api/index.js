@@ -7,7 +7,7 @@ const { API_VERSION, LANG, ERROR_CODES } = require('./../constants');
 
 const API_URL = 'https://api.vk.com/method/';
 
-class VkApi {
+class Api {
   /**
    * Constructor
    *
@@ -128,4 +128,4 @@ class VkApi {
 	}
 }
 
-module.exports = VkApi;
+module.exports = Api;

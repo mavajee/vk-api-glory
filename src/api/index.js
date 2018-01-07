@@ -1,8 +1,9 @@
 const fetch = require('node-fetch');
 const qs = require('querystring');
+const { URL } = require('url');
 
-const apiError = require('./../errors/api');
-const { API_VERSION, LANG } = require('./../constants');
+const ApiError = require('./../errors/api');
+const { API_VERSION, LANG, ERROR_CODES } = require('./../constants');
 
 const API_URL = 'https://api.vk.com/method/';
 
@@ -13,20 +14,21 @@ class VkApi {
    * @param {object} options
    *   @property {string} accessToken
    *   @property {string|number} apiVersion
-   *   @property {function} recognizeCaptcha
+   *   @property {string} [lang="ru"]
+   *   @property {function} captchaHandler
    */
   constructor({
     accessToken,
     apiVersion = API_VERSION,
     lang = LANG,
 
-    recognizeCaptcha
+    captchaHandler
   } = {}) {
     this.accessToken = accessToken;
     this.apiVersion = apiVersion;
     this.lang = lang;
 
-    this.recognizeCaptcha = recognizeCaptcha;
+    this.captchaHandler = captchaHandler;
   }
 
   /**
@@ -42,21 +44,36 @@ class VkApi {
       return Promise.reject(new Error('Attribute Error. `methodName` must be a string.'));
     }
 
-    let requestBody = Object.assign({
-      access_token: this.accessToken || params.accessToken,
-      lang: this.lang || params.lang,
-      v: this.apiVersion || params.apiVersion
-    }, params);
+    let retry = (_p) => (
+      this.call(methodName, {
+        ...params,
+        ..._p
+    }));
 
-    return fetch(`${API_URL}/${methodName}`, {
+    let requestBody = {
+      access_token: this.accessToken || params.accessToken || params.access_token,
+      lang: this.lang || params.lang,
+      v: this.apiVersion || params.apiVersion || params.v,
+
+      ...params
+    };
+
+    return fetch(new URL(methodName, API_URL).toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
       timeout: 4500,
       body: qs.stringify(requestBody)
-    }).then(response => response.json())
+    })
+      .then(response => response.json())
       .then(json => {
         if (json.error) {
-          return Promise.reject(new apiError(json.error));
+          const error = new ApiError(json.error);
+
+          if (error.code === ERROR_CODES.CAPTCHA_REQUIRED && this.captchaHandler) {
+            return this.handleCaptcha(error, retry);
+          }
+
+          return Promise.reject(error);
         }
 
         // Return full response, because it can include "execute_errors".
@@ -90,6 +107,24 @@ class VkApi {
     return this;
   }
 
+  /**
+   * @param {object}
+   *   @property {string} captchaSid
+   *   @property {string} captchaImg
+   * @param {function} reCall
+   * @returns {Promise}
+   * @private
+   */
+  handleCaptcha({ captchaSid, captchaImg }, reCall) {
+    return this.captchaHandler(captchaImg)
+      .then(captchaKey => (
+          reCall({
+            captcha_sid: captchaSid,
+            captcha_key: captchaKey
+          })
+        )
+      )
+  }
 }
 
 module.exports = VkApi;

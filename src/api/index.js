@@ -89,6 +89,7 @@ class Api {
   /**
    * Set access token
    * @param {string} accessToken
+   * @returns {Api}
    * @public
    */
   setAccessToken(accessToken) {
@@ -100,10 +101,24 @@ class Api {
   /**
    * Set api version
    * @param {string|number} apiVersion
+   * @return {Api}
    * @public
    */
   setApiVersion(apiVersion) {
     this.apiVersion = apiVersion;
+
+    return this;
+  }
+
+  /**
+   * Set a captcha handler
+   * @param {function} handler – this function getting captchaImg and must
+   *   returns a promise with captcha key
+   * @returns {Api}
+   * @public
+   */
+  setCaptchaHandler(handler) {
+    this.captchaHandler = handler;
 
     return this;
   }

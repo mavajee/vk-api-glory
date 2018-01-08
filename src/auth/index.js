@@ -29,7 +29,7 @@ class Auth {
       clientId,
       clientSecret,
       scope = userScopes.join(','),
-      version = API_VERSION,
+      apiVersion = API_VERSION,
     } = {}
   ) {
 
@@ -38,7 +38,7 @@ class Auth {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.scope = scope;
-    this.version = version;
+    this.apiVersion = apiVersion;
 
     // this.captchaHandler = undefined;
   }
@@ -70,7 +70,7 @@ class Auth {
       client_id: clientId,
       client_secret: clientSecret,
       scope: scope,
-      v: this.version,
+      v: this.apiVersion,
       display: 'mobile',
       response_type: 'token',
       redirect_uri: 'https://oauth.vk.com/blank.html'
@@ -168,7 +168,7 @@ class Auth {
       password: this.password,
       scope: scope,
       grant_type: 'password',
-      v: this.version
+      v: this.apiVersion
     });
 
     return fetch(`${DIRECT_AUTH_URL}?${params}`)

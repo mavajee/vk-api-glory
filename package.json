@@ -17,6 +17,10 @@
   ],
   "author": "mavajee <mxv.vlasov@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavajee/vk-api-glory.git"
+  },
   "engines": {
     "node": ">=8.0.0"
   },

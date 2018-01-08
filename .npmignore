@@ -1,2 +1,4 @@
+./examples
+
 .gitignore
 package-lock.json

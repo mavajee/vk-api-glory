@@ -34,9 +34,8 @@ new Auth(options);
 | scope        | string         | [Права доступа](https://vk.com/dev/permissions).        |
 | apiVersion   | string, number | Версия API для использования. Стандартная версия: 5.69. |
 
-#### Auth.implicit(obj)
-- obj <object\> [Описание](#obj)
-- returns <object\> {accessToken, userId, expires}
+#### Auth.implicit()
+- promise <object\> [Описание](#obj)
 
 [Явная авторизация](https://vk.com/dev/implicit_flow_user) для Standelone приложений. Dyrty way авторизация т.к.
 имитируется авторизация через браузер. Этот тип авторизации используется для недоверенных приложений(приложений которые
@@ -51,9 +50,8 @@ new Auth(options);
 | userId      | number | Id пользователя для которого была выполнена авторизация. |
 | expires     | number | Время жизни ключа в секундах.                            |
 
-#### Auth.direct(obj)
-- obj <object\> [Описание](#obj)
-- returns <object\> {accessToken, userId, expires}
+#### Auth.direct()
+- promise <object\> [Описание](#obj)
 
 [Прямая авторизация](https://vk.com/dev/auth_direct), через API, для одобренных или официальных
 приложений.
@@ -96,7 +94,8 @@ new Api(options);
 #### Api.call(methodName, params)
 - methodName <string\> [Список методов](https://vk.com/dev/methods)
 - params <object\> Параметры для соответствующего метода API. Есть возможность переопределить параметры
-заданные в инстанции объекта.
+заданные в инстанции объекта
+- promise <object/> Данные вызываемого метода
 
 #### Api.setAccessToken(accessToken)
 - accessToken <string\>
@@ -142,4 +141,5 @@ vkApi.call('users.get')
 # Todo
 - Переписать промисы на асинхронные функции;
 - Добавить middleware;
-- Добавить очереди с возможностью запуска параллельных потоков.
+- Добавить очереди с возможностью запуска параллельных потоков;
+- Добавить тесты.

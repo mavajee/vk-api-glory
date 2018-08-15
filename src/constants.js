@@ -3,7 +3,7 @@ module.exports = {
    * Api version
    * @type {string}
    */
-  API_VERSION: '5.69',
+  API_VERSION: '5.80',
 
   /**
    * Api language
